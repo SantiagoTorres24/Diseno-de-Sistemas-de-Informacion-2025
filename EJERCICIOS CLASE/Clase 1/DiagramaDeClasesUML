@@ -1,0 +1,34 @@
+class Inscripcion{
+-alumno: Alumno
+-materias: List<Materia>
+
+-inscripcion(Alumno alumno, List<Materia> materias)
+-aprobada()
+
+}
+
+class Alumno{
+-nombre: String
+-materiasCursadas: List<Materia>
+-materiasAprobadas: List<Materia>
+
+-Alumno(String nombre, List<Materia> materiasCursadas, List<Materia> materiasAprobadas)
++curso(Materia materia)
++aprobo(Materia materia)
+}
+
+class Materia{
+-cursadasNecesarias: List<Materia>
+-aprobadasNecesarias: List<Materia>
+
+-Materia(List<Materia> cursadasNecesarias, List<Materia> aprobadasNecesarias)
++alumnoPuedeCursar(Alumno alumno)
++cumpleCursadas(Alumno alumno)
++cumpleAprobadas(Alumno alumno)
+}
+
+Inscripcion o-- Alumno
+Inscripcion "*" o-- Materia
+Alumno  "*" o-- Materia
+Materia -- Materia
+
