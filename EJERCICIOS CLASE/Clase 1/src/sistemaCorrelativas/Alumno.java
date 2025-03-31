@@ -31,7 +31,7 @@ public class Alumno {
         }
 
         public boolean curso(Materia materia){
-            List<Materia> cursadasSinRepetidos = this.materiasCursadas..stream().distinct().collect(Collectors.toList());
+            List<Materia> cursadasSinRepetidos = this.materiasCursadas.stream().distinct().collect(Collectors.toList());
             return materiasCursadas.contains(materia);
         }
 
