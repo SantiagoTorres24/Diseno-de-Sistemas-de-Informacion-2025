@@ -27,6 +27,7 @@ public class Alumno {
 
         public void agregarMateriasAprobadas(Materia ... materiasAprobadas) {
             Collections.addAll(this.materiasAprobadas, materiasAprobadas);
+            Collections.addAll(this.materiasCursadas, materiasAprobadas); // En caso de alguna promoción, tmb agrega la materia a las cursadas          
         }
 
         public boolean curso(Materia materia){
