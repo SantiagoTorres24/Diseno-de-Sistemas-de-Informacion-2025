@@ -1,0 +1,67 @@
+@startuml
+
+'FUENTES
+class Fuente{
+
+}
+class Hecho{
+    - titulo: String
+    - descrip: String
+    - categoria: String
+    - ubicacion: String
+    - fechaHecho: LocalDate
+    - fechaCarga: LocalDate
+    - origen: String
+}
+class Coleccion{
+    - titulo: String
+    - descrip: String
+    - hechos: List<Hecho>
+}
+'USUARIOS
+class Usuario{
+    - nombre: String
+    - apellido: String
+    - edad: Int
+    'Puede estar null si es ANONIMO
+
+    + solicitarEliminacion(Hecho hecho): void
+    'Aqui se crea la Solicitud
+}
+class Administrador{
+    - solicitudesRecibidas: List<Solicitud>
+    + resolverSolicitud(Solicitud solicitud): void
+    'Obtiene el hecho
+    + eliminarHecho(Hecho hecho): void
+    'es un DELETE LOGICO
+}
+class Visitante{
+    + obtenerHechos(Coleccion coleccion): List<Hecho>
+}
+class Contribuyente{
+    - hechosSubidos: List<Hecho>
+    + subirHecho(Hecho hecho): void
+}
+
+class Solicitud{
+    - texto: String
+    - usuario: Usuario
+    - hechoAfectado: Hecho
+    - aceptada: Boolean
+}
+
+'Servicios
+abstract ServicioAgregacion{}
+abstract ServicioVisualizacion{
+}
+
+Coleccion -->"*" Hecho : contiene
+Hecho "*"<- Contribuyente : sube
+Administrador -->"*" Solicitud : revisa
+Solicitud  -> Hecho : afecta
+Usuario <|-- Visitante
+Usuario <|-- Contribuyente
+Usuario <|-- Administrador
+ServicioVisualizacion -> Fuente
+
+@enduml
