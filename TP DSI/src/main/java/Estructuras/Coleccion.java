@@ -8,6 +8,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -52,5 +54,9 @@ public class Coleccion {
 
     public void eliminarHecho(Hecho hecho) {
         this.hechos.remove(hecho);
+    }
+
+    public List<Hecho> obtenerHechosFiltrados(Predicate<Hecho> filtro) {
+        return this.hechos.stream().filter(filtro).collect(Collectors.toList());
     }
 }
