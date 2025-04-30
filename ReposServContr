@@ -35,6 +35,8 @@ public class SeriesController {
     }
 }
 
-Resumen: Controller recibe la solicitud del usuario y las delega a service que procesa la logica y se asegura que se cumplen las reglas de negocio, accede a los datos con los repositorios.
+Resumen: Controller recibe la solicitud del usuario y las delega a service que procesa la logica y se asegura que se cumplen las reglas de negocio, accede a los datos con los 
+repositorios.
 
-DTOs(Data Transfer Object): Los dto de output yo con los datos de dominio modelo al objeto para que se adapte a lo que tiene que ver el usuario y los de input al reves, a partir de los datos que ve el usuario los adapto a un objeto de mi dominio de back                                                      
+DTOs(Data Transfer Object): Los dto de output yo con los datos de dominio modelo al objeto para que se adapte a lo que tiene que ver el usuario y los de input al reves, a partir de 
+los datos que ve el usuario los adapto a un objeto de mi dominio de back                                                      
