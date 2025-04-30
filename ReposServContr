@@ -1,0 +1,40 @@
+Repositorio: Se encarga de interactuar con los datos (base de datos) se aplica como interfaz y la implementacion de la interfaz como venimos trabajando.
+Pongo @Repository arriba de la clase para instanciarla
+
+Service: Orquesta la ejecucion de las operaciones de negocio, llama a objetos de dominio y repositorios, orquestacion de casos de uso
+
+@Service --> Instancia la clase
+public class SeriesService implements ISeriesService { --> implementan una interfaz de service distinta a la del repositorio
+    @Autowired --> Para resolver dependencias
+    private ISeriesRepository seriesRepository; --> Llamo al repositorio del objeto con el que voy a trabajar
+
+    @Override
+    public List<SerieOutputDTO> buscarTodas() --> el desarrollo de los metodos es del tipo repository.()....
+
+Controller: Recibe las peticiones del cliente y las delega a los services
+
+@RestController --> Instancio la clase
+@RequestMapping("/api/series") --> Defino la ruta base(back)
+@CrossOrigin(origins = "http://localhost:3000") --> Ruta del front
+public class SeriesController {
+    @Autowired
+    private ISeriesService seriesService;
+
+    @Autowired
+    private ISeederService seederService;
+
+    @GetMapping --> cuando corro en /api/series se corre esto
+    public List<SerieOutputDTO> buscarTodas() {
+        return this.seriesService.buscarTodas();
+    }
+
+    @GetMapping("/inicializar") --> cuando corro en /api/series/inicializar se corre esto
+    public boolean inicializarDatos() {
+        this.seederService.init();
+        return true;
+    }
+}
+
+Resumen: Controller recibe la solicitud del usuario y las delega a service que procesa la logica y se asegura que se cumplen las reglas de negocio, accede a los datos con los repositorios.
+
+DTOs(Data Transfer Object): Los dto de output yo con los datos de dominio modelo al objeto para que se adapte a lo que tiene que ver el usuario y los de input al reves, a partir de los datos que ve el usuario los adapto a un objeto de mi dominio de back                                                      
