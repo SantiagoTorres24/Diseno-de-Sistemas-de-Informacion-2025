@@ -1,0 +1,93 @@
+@startuml
+Class Sucursal{
+ - nombre: String
+  - productos: List<Producto>
+  - observers: List<IObserver>
+  + agregarObservers(...)
+  + eliminarObserver(...)
+  + agregarProductos(...)
+  + vende(producto)
+}
+Class Producto{
+ - nombre: String
+ - precioBase: Double
+ - tipoProducto: TipoProducto
+ + precioFinal()
+ + totalImpuestos()
+}
+
+class TipoProducto{
+ - nombre: String
+ - impuestos: List<Impuesto>
+ + agregarImpuesto(Impuesto impuesto)
+ + totalImpuestos(Producto producto)
+}
+
+interface IObserver{
+ + notificarVenta((Producto producto)
+}
+
+class OficinaContable{
+ - totalLibroDiario: Double
+ - adapter: AdapterSistemaContable
+ + notificarVenta(Producto producto)
+}
+
+class Deposito{
+ - productosAPreparar: List<Producto>
+ + notificarVenta(Producto producto)
+ - preparar(Producto producto)
+}
+
+class ContadorVentas{
+ - cantidadVentas: Int
+ + notificarVenta(Producto producto)
+}
+
+interface Impuesto {
+ + calculate(Producto producto)
+}
+
+class IVA {
+  - {static} porcentaje: Double
+  + calculate(Producto producto)
+}
+
+class EO {
+  - {static} gananciasImpositivas: Double
+  - {static} factorPrecioBase: Double
+  - {static} factorGananciasImpositivas: Double
+  + calculate(Producto producto)
+}
+
+class EI {
+  - {static} gananciasImpositivas: Double
+  - {static} factorPrecioBase: Double
+  - {static} factorGananciasImpositivas: Double
+  + calculate(Producto producto)
+}
+
+interface AdapterSistemaContable {
+  + notificar(producto)
+}
+
+class OficinaContableFactory {
+  - adapterSistemaContable: AdapterSistemaContable
+  + crear(): OficinaContable
+}
+
+' Relaciones
+Sucursal "*" -- "*" Producto
+Sucursal "*" -- "*" IObserver
+Producto "1" -- "1" TipoProducto
+TipoProducto "*" -- "*" Impuesto
+OficinaContable ..|> IObserver
+Deposito ..|> IObserver
+ContadorDeVentas ..|> IObserver
+IVA ..|> Impuesto
+EO ..|> Impuesto
+EI ..|> Impuesto
+OficinaContable "1" -- "1" AdapterSistemaContable
+OficinaContableFactory "1" -- "1" AdapterSistemaContable
+
+@enduml
