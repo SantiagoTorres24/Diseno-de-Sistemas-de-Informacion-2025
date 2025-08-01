@@ -1,0 +1,36 @@
+1) Estableceria un schedule con la fechaFin del intervalo, en donde se desactivaria la visibilidad de la publicacion
+seteando en false el booleano visibilidad, lo que logra una mayor fiabilidad del sistema, desactivando la publicacion
+cuando se requiera. Esto mismo se puede realizar con la fechaInicio para hacer visible una publicacion.
+
+2) Les notificaria de inmediato por mail una vez que la consulta se haya realizado con exito, esto permite una simple
+comunicacion en la que solo se contacta al propietario ante una consulta ya concretando, aumentando la performance del 
+sistema.
+
+3) El problema puede deberse a que en el sistema hay mucho contenido multimedia asociado a las publicaciones. Yo estableceria 
+un limite de contenidos por publicacion, un limite de tamaño por contenido e incluso que los contenidos se carguen una vez el
+usuario llegue hasta ahi y los requiera, y no que se carguen todos desde un principio. Esto aumenta la disponibilidad del sistema
+ya que estaria funcionando todo el tiempo, aumentando asi tmb su performance.
+
+JUSTIFICACIONES DE DISEÑO
+
+No considere necesario el uso de ningun patron de diseño, podia hacer usado algun patron para los distintos tipos de Usuario
+pero como comparten comportamiento y solo difieren en datos decidi utilizar Herencia.
+
+Modele los atributos de Propiedad como una clase cada atributo para una mayor robustez y evitar una clase con muchos atributos, de 
+esta forma concentro un gran nivel de informacion en menos atributos. Establezco un historial de modificaciones de Precio en donde
+cada vez que se cambia un atributo de Precio asociado a una propiedad este nuevo Precio se actualiza en este historial, además las 
+propiedades pueden dejar de estar en el mercado, por eso el booleano activa.
+
+Cada Publicacion tiene asociado un Plan en donde este ultimo se encargara de verificar que los intervalos de la Publicacion cumplan 
+con los requisitos del plan. Similar sucede con la Modelacion, en donde la Publicacion verifica que se cumple con la Moderacion (usando
+openAI) y no viceversa. Estas dos implementacion aportan una mayor cohesión dentro del sistema, donde cada clase cumple con las 
+funciones necesarias y no hace mas de lo que debe.
+
+Estas verificaciones de Intervalos y Moderacion se realizan de forma sincrona una vez que un usuario quiera realizar una Publicacion, en 
+donde la misma se subira una vez que haya llegado una respuesta exitosa de ambas verifiaciones, si alguna falla entonces la Publicacion
+no podra subirse y se rechazara.
+
+Se tiene una clase Pago que sera generado por GeoPagos y que luego sera pagado a traves de un servicio de forma asincrona a traves de un 
+WebhookPago que nos notificara una vez el pago sea aceptado, seteando el estado del Pago a ACEPTADO. Esta accion se realizara cada mes, 
+teniendo en cuenta el plan elegido y además se tendran en cuenta las N horas sobrantes.
+

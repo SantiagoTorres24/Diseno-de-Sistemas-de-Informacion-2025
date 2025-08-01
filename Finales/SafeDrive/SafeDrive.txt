@@ -1,0 +1,59 @@
+1a) Dado que el servicio externo presenta caídas frecuentes, tiempos de respuesta elevados y costos por solicitud, 
+propongo implementar una estrategia de solicitudes asincronas utilizando un sistema Push Based o webhook.
+ Esta estrategia permite que cuando haya una actualización el sistema externo avise al componente necesario con el 
+nuevo valor de la cotización, de esta forma si el sistema se encuentra caído no haremos solicitudes que nos arrojaran
+errores, ahorando en el costo de las mismas volviendo esta solución más barata y eficiente.
+
+1b) Eficiencia: Desempeño relativo a la cantidad de recursos utilizados bajo determinadas condiciones. Se logra una
+mayor eficiencia y performance ya que no se harían solicitudes que arrojen errores cuando el sistema esta caído.
+Disponibilidad: Capacidad del sistema para estar operativo cuando se lo necesita. Al evitar las llamadas a un sistema
+externo que pueda estar caído, garantizamos que nuestro sistema se mantenga funcionando cuando se lo necesita.
+Fiabilidad: Ligado a la arquitectura. Capacidad de un sistema para desempeñar las funciones especificadas, cuando se 
+usa bajo unas condiciones y periodo de tiempo determinados. El sistema siempre va a funcionar correctamente, sin devolver
+errores en caso de que el servicio externo este fallando.
+
+2a) Para calcular y generar polizas mensualmente de cada cliente y enviarlas por mail realizaria el proceso asincronicamente,
+ya que es una tarea pesada que no requiere bloquear el proceso porque no requiere esperar una respuesta. Para realizar el envio
+de todos los mails conviene usar un sistema multihilo, que permita generar y enviar varios mails concurrentemente evitando tener
+que esperar a que termine de enviarse un mail para enviar otro, aumentando de esta forma la eficiencia del sistema.
+
+2b) Para la solucion voy a requerir:
+MailScheduler: Es un componente que se encarga de cada 1 mes ejecutar el procedimiento para calcular y generar las polizas 
+de cada cliente.
+ServiceCliente: Ante la solicitud de generar una poliza, debo extraer los datos del cliente para poder realizarla.
+ServicePoliza: Con los datos del cliente, genero y envio la poliza para que pueda ser enviada por mail.
+ServiceMail: Voy a tener un servicio de mails que se encargue de generar los mails con las polizas y enviarlos a los clientes.
+Logger: Agregaría un logger para registrar mensajes de exito/fallo.
+
+3a) Las APIs Rest utilizan el protocolo HTTP el cual se basa en recursos identificados por URIs (identificador uniforme de recursos).
+Usan verbos HTTP (GET, POST, PUT, DELETE) para operaciones e intercambian datos en formato JSON o XML. Con los sig codigos de estado:
+* 1xx: Respuestas informativas. Indica que la petición ha sido recibida y se está
+procesando.
+* 2xx: Respuestas correctas. Indica que la petición ha sido procesada correctamente.
+* 3xx: Respuestas de redirección. Indica que el cliente necesita realizar más acciones
+para finalizar la petición.
+* 4xx: Errores causados por el cliente. Indica que ha habido un error en el procesado
+de la petición a causa de que el cliente ha hecho algo mal.
+* 5xx: Errores causados por el servidor. Indica que ha habido un error en el procesado
+de la petición a causa de un fallo en el servidor.
+
+Estructura del Cuerpo de Solicitud en formato json:
+{
+  cliente: "Nombre",
+  id_cliente: "ID",
+  fecha: "Fecha",
+  ubicacion: "Ubicación",
+  descripcion: "Descripcion",
+  evidencia: "Evidencia"
+}
+
+El sistema encontraria al cliente segun su nombre e id y podria acceder a la poliza para evaluar el siniestro
+
+Estructura del Cuerpo de Respuesta en formato json:
+{
+  respuesta: "Mensaje de Respuesta",
+  codigoEstado: "CodigoDeRespuesta"
+}
+
+El cliente recibira un mensaje y codigo sobre si su solicitud fue enviada correctamente o no, luego el sistema
+le avisara si su poliza cubre el siniestro o no
