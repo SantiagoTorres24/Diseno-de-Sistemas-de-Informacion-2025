@@ -1,0 +1,22 @@
+Justifiaciones de Diseño: 
+
+El elemento central del sistema son las Visualizaciones, en donde a partir de un Visualizador y un Video se analiza
+el comportamiento del Visualizador sobre el Video, que generaran Seguimientos y Propiedad. Considero que una 
+Visualizacion puede tener varios Seguimientos ya que un Visualizador puede ver un Video varias veces o incluso verlo
+una sola vez pero de a distintas tandas, lo que aporta mayor trazabilidad.
+
+A su vez, una vez terminada la Visualizacion sera agregada a una lista de Visualizacion del Video visualizado, para poder
+hacer un posterior analisis del Video a raíz de sus visualizaciones.
+
+Una vez comenzada la Visualizacion se hara una llamada a un PluginExterno para que pueda generar el seguimiento de dicha
+Visualizacion.
+
+Además, implemento un Patron Strategy para las propiedades, en donde con la interfaz IPropiedad puedo encapsular las dos
+propiedades permitiendo intercambiarlas en tiempo de ejecución, esto aporta mayor cohesion a las Visualizaciones, mayor 
+mantenibilidad ya que puedo detectar facilmente el comportamiento de cada propiedad y una mayor extensibilidad que permite
+incorporar nuevas propiedad y con los enums de cada categoria tambien podria agregar nuevas categorias. De esta forma logro
+no tener metodos largos, codigo duplicado o una clase Dios.
+
+Este diseño presenta una alta compatibilidad con otros componentes (Plugin) y permite un mantenimiento extensible, pudiendo
+agregar Propiedades o Categorias. Además el bajo acoplamiento y alta cohesión de las clases mejor la mantenibilidad, aumenta
+la reutilizacion y evita que ante un error o modificacion de un componente se vean afectados los demas componentes
