@@ -1,0 +1,111 @@
+Justificaciones de Diseño:
+
+* Que cada motoquero gestione sus Motos: Actualmente un Motoquero tiene una lista de sus Motos permitiendole
+agregar una Moto si lo requiere, de esta forma obtenemos un sistema mas flexible y extensible.
+
+* Que los Administradores puedan gestionar los Caminos: Un Administrador puede gestionar facilmente los caminos,
+creandolos o modificandolo, aportando una alta mantenibilidad al sistema. Ademas al usar una clase Fotografia se 
+obtiene una mayor usabilidad y expresividad. 
+
+* Que los Administradores gestionen Puntos de Interes: Se modela la clase PuntoDeInteres para poder cumplir este
+requerimiento, utilizando una clase Ubicacion para evitar una clase con muchos atributos y poder permitir un alto
+detalle en la ubicacion de un camino, estableciendo una alta cohesion para esta clase. Ademas un PuntoDeInteres 
+tiene un TipoPuntoInteres que puede ser creado y modificado por el usuario.
+
+* Que los motoqueros gestionen sus Viajes: Se modela la clase Viaje, en donde un Motoquero puede planificar un 
+viaje, en donde lo crea y agrega a su lista de viajes pendientes, luego cuando llegue la fecha del viaje lo 
+realiza. Un viaje tiene el Camino a recorrer, los puntos de interes y la Moto elegida.
+
+* Enviar Recomendaciones: Mediante un Cronjob que se ejecuta en Recomendacion, se genera una Recomendacion utilizando
+el patron Adapter para poder integrarse a 2 APIs REST, lo que genera una mayor mantenibilidad por el bajo acoplamiento
+entre el GeneradorRecomendacion y las clases adaptas, ademas de una mayor cohesion en la misma debido a la delegacion
+de comportamiento en el adapter; de esta forma tambien evitamos una herencia rechazada, clases alternativas con interfaces
+diferentes y una clase de biblioteca incompleta.
+
+Además al Notificador teniendo todos los Viajes que se realizaran dentro de 24hs evito tener multiples tareas en el sistema
+lo que logra una mayor eficiencia y performance en el mismo.
+
+
+Gestion de Caminos No Convecionales:
+
+CaminoController:
+ private CaminoRepository caminoRepository
+
+http://crear_camino/{parametros}
+private crearCamino(){ 
+	Camino camino = new Camino(parametros)
+
+	caminoRepository.add(camino)
+}
+
+http://eliminar_camino/{id}
+private eliminarCamino(){
+	Camino camino = caminoRepository.find(id)
+
+	caminoRepository.remove(camino)
+}
+
+http://modificar_camino/{id}-{parametros}
+private modificarCamino(){
+	Camino camino = caminoRepository.find(id)
+
+	camino.setParametro(parametro)
+}
+
+CaminoRepository:
+private List<Camino> caminos
+
+private add(Camino camino){ 
+	caminos.add(camino)
+}
+
+private remove(Camino camino){
+	caminos.remove(camino)
+}
+
+private find(id){
+	Camino camino = caminos.filter(camino -> camino.id == id).findFirst()
+
+	return camino
+}
+class Camino {
+
+@Getter
+@Setter
+
+  - nombre: String
+  - descripcion: String
+  - fotografias: List<Fotografia>
+  - dificultad: Categoria
+  - terreno: TipoTerreno
+  - duracionEstimada: Integer
+  - distanciaTotal: Integer
+  - puntoInicio: String
+  - puntoLlegada: String
+  - puntosInteres: List<TipoPuntoInteres>
+
+  + agregarFotografia(Fotografia fotografia): Void
+  + agregarPuntoDeInteres(TipoPuntoInteres puntoInteres): Void
+}
+
+4) Utilizaria un Patron State para poder abstraer cada forma de calculo de combustible y poder ir cambiandolo
+segun el Motoquero lo requiera, aportando una mayor cohesion a Motoquero, una mejor mantenibilidad ya que puedo
+detectar facilmente el comportamiento de cada algoritmo y una alta extensibilidad pudiendo ir agregando los
+algoritmos que se vayan creando, evitando asi metodos largos, codigo cuplicado y una clase Dios.
+
+ARQUITECTURA
+
+1)En el diagrama de Arquitectura falta marcar las capas de Controller, Service y Repository, ademas de que no se
+esta teniendo en cuenta la implementacion de las Notificaciones, en donde se pueden realizar por Wsp o por Push,
+esta integracion deberia estar detallada en el diagrama.
+
+Como mejora yo no usaria una unica base de dato, ya que no es seguro, ni fiable, facilitando la ocurrencia de errores.
+Yo implementaria varias bases de datos distinas, una para: Motoquero, Moto, Camino, Viaje, Recomendacion, Notificacion
+y Formularios.
+
+2) Cronjob.
+
+3) Propongo implementar una solucion Publicador-Subscriptor, utilizando un Broker. Entonces las estaciones actuarian de
+Publicadores publicando los datos complementarios al sistema que actuaria como Subscriptor y ademas seria una relacion
+bidireccional para que el sistema pueda lanzar alguna alarma. Logrando una gran compatibilidad en el sistema y una gran 
+extensibilidad ante la posibilidad de agregar algun otro sensor.
