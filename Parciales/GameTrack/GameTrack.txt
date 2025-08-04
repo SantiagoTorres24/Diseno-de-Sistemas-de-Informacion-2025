@@ -1,0 +1,54 @@
+Justificaciones de Diseño:
+
+* Permitir gestionar los establecimientos: Se modela la clase Establecimiento, el cual permite poder gestionar y administrar
+los mismos, estableciendo una Ubicacion y los premios disponibles en el mismo. Tener una instancia por cada establecimiento
+permite una mayor eficiencia en la administracion y mantenimiento de cada uno, ademas de una mayor compatibilidad.
+
+* Permitir la gestion de Juegos y Maquinas: Se modela la clase Juego y la clase Maquina, en donde un Establecimiento puede tener
+varios Juegos y varias Maquinas. Un establecimiento puede agregar o eliminar cada Juego o Maquina, permitiendo la trazabilidad
+de los Juegos y las Maquinas. De esta forma el Establecimiento sigue el principio de Single Responsability, en donde solo se 
+encarga de admnistrar sus Juegos y Maquinas, permitiendo una gran cohesión en la clase Establecimiento.
+
+* Me canse
+
+
+Recargar una cierta cantidad de Creditos
+
+TarjetaController:
+ TarjetaRepositiry tarjetaRepository
+http://cargar_credito{id}-{creditos}
+private cargarCredito(long id){ 
+  Tarjeta tarjeta = tarjetaRepository.find(id)
+  tarjeta.sumarCreditos(creditos)
+}
+
+Tarjeta:
+ Integer creditos
+
+ private sumarCreditos(Integer creditos){
+  this.creditos += creditos
+}
+
+Jugadores Destacados: Se implementa un Cronjob que mensualmente activa el GeneradorReporte que genera un Reporte utilizando
+un algoritmo para generar el Ranking, actualmente hay un solo algoritmo pero se utiliza el Patron State para poder agregar
+distintos algoritmos. El GeneradorReporte deberia llamar a una clase encargada de enviar el mail al administrador pero me
+olvide de hacerlo jeje.
+
+Dias de Felicidad: La clase Juego que otorga los puntos deberia chequear si el dia actual es un diaDeFelicidad.
+
+class DiaDeFelicidad { 
+  private String dia
+  private Double multiplicador 
+}
+
+class Juego {
+  private List<DiaDeFelicidad> diasDeFelicidad
+  private Tarjeta tarjeta
+  private Partida partidaEnCurso
+
+  private void sumarPuntos(Puntos puntos){
+    if(diasDeFelicidad.any(dia -> dia = partidaEnCurso.Day()){
+      tarjeta.sumarPuntos(puntos * dia.multiplicador())
+  } else {
+      tarjeta.sumarPuntos(puntos
+  }
